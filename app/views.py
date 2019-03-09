@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.views.generic import View
 from app.models import Post
+from .forms import PostForm
 
 
 class PostView(View):
@@ -8,4 +10,15 @@ class PostView(View):
 
     def get(self, request):
         posts = Post.objects.all()
-        return render(request, "app/index.html", {"posts": posts})
+        form = PostForm()
+        return render(request, "app/index.html", {"posts": posts, "form": form})
+
+    def post(self, request):
+        form = PostForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.user = request.user
+            form.save()
+            return redirect("/")
+        else:
+            return HttpResponse("error")
