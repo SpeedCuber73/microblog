@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-    <button type="submit">Post</button>
-    </form>
+    {% if user.is_active %}
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+        <button type="submit">Post</button>
+        </form>
+    {% endif %}
+
     {% for post in posts %}
         <p>{{ post.text }}</p>
         <b>{{ post.date }}</b>

@@ -9,7 +9,7 @@ class PostView(View):
     """User's messages"""
 
     def get(self, request):
-        posts = Post.objects.all()
+        posts = Post.objects.order_by("-id")
         form = PostForm()
         return render(request, "app/index.html", {"posts": posts, "form": form})
 
