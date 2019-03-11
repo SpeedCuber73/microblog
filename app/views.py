@@ -9,7 +9,7 @@ class PostView(View):
     """User's messages"""
 
     def get(self, request):
-        posts = Post.objects.order_by("-id")
+        posts = Post.objects.filter(twit__isnull=True)
         form = PostForm()
         return render(request, "app/index.html", {"posts": posts, "form": form})
 
@@ -18,6 +18,9 @@ class PostView(View):
         if form.is_valid():
             form = form.save(commit=False)
             form.user = request.user
+            id_parent = request.POST.get("id_parent", None)
+            if id_parent is not None:
+                form.twit = Post.objects.get(id=id_parent)
             form.save()
             return redirect("/")
         else:
